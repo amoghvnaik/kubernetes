@@ -65,15 +65,15 @@ spec:
         - containerPort: 8001
         env:
         - name: MYSQL_USER
-          value: ?MYSQL_USER
+          value: {{MYSQL_USER}}
         - name: MYSQL_PASSWORD
-          value: ?MYSQL_PASSWORD
+          value: {{MYSQL_PASSWORD}}
         - name: MYSQL_IP
-          value: ?MYSQL_IP
+          value: {{MYSQL_IP}}
         - name: MYSQL_DB
-          value: ?MYSQL_DB
+          value: {{MYSQL_DB}}
         - name: MYSQL_KEY
-          value: ?MYSQL_KEY
+          value: {{MYSQL_KEY}}
 
 ---
 apiVersion: v1
