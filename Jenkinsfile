@@ -12,9 +12,7 @@ pipeline{
 		}
                 stage('--deployment--'){
                         steps{
-                                sh '''ssh deployment << BOB
-				      export BUILD_NUMBER="${BUILD_NUMBER}"
-                                      docker service update --image project-jenkins:5000/service2:build-${BUILD_NUMBER} --replicas "3" --update-order "start-first" --update-parallelism "1" project2_service2
+                                sh '''sed "s/{{BUILD}}/${BUILD_NUMBER}/g;s/?MYSQL_USER/${MYSQL_USER}/g;s/?MYSQL_PASSWORD/${MYSQL_PASSWORD}/g;s/?MYSQL_IP/${MYSQL_IP}/g;s/?MYSQL_DB/${MYSQL_DB}/g;s/?MYSQL_KEY/${MYSQL_KEY}/g" myapp.yaml | kubectl apply -f nginx.yaml -f - 
                                       '''
                         }
                 }
