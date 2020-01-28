@@ -1,0 +1,202 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  labels: 
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: "/etc/nginx/conf.d"
+          name: nginx
+      volumes:
+      - name: nginx
+        configMap:   
+          name: nginx
+         
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+spec:
+  selector:
+    app: nginx
+  ports: 
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service1
+  labels: 
+    app: service1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service1
+  template:
+    metadata:
+      labels:
+        app: service1
+    spec:
+      containers:
+      - name: service1
+        image: project-jenkins:5000/service1:build-{{BUILD}}
+        ports:
+        - containerPort: 8001
+        env:
+        - name: MYSQL_USER
+          value: ?MYSQL_USER
+        - name: MYSQL_PASSWORD
+          value: ?MYSQL_PASSWORD
+        - name: MYSQL_IP
+          value: ?MYSQL_IP
+        - name: MYSQL_DB
+          value: ?MYSQL_DB
+        - name: MYSQL_KEY
+          value: ?MYSQL_KEY
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service1
+spec:
+  selector:
+    app: service1
+  ports: 
+  - protocol: TCP
+    port: 8001
+    targetPort: 8001
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service2
+  labels: 
+    app: service2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service2
+  template:
+    metadata:
+      labels:
+        app: service2
+    spec:
+      containers:
+      - name: service2
+        image: project-jenkins:5000/service2:build-{{BUILD}}
+        ports:
+        - containerPort: 5001
+         
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service2
+spec:
+  selector:
+    app: service2
+  ports: 
+  - protocol: TCP
+    port: 5001
+    targetPort: 5001
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service3
+  labels: 
+    app: service3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service3
+  template:
+    metadata:
+      labels:
+        app: service3
+    spec:
+      containers:
+      - name: service3
+        image: project-jenkins:5000/service3:build-{{BUILD}}
+        ports:
+        - containerPort: 5002
+         
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service3
+spec:
+  selector:
+    app: service3
+  ports: 
+  - protocol: TCP
+    port: 5002
+    targetPort: 5002
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service4
+  labels: 
+    app: service4
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service4
+  template:
+    metadata:
+      labels:
+        app: service4
+    spec:
+      containers:
+      - name: service4
+        image: project-jenkins:5000/service4:build-{{BUILD}}
+        ports:
+        - containerPort: 5003
+         
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service4
+spec:
+  selector:
+    app: service4
+  ports: 
+  - protocol: TCP
+    port: 5003
+    targetPort: 5003
+  type: ClusterIP
+
