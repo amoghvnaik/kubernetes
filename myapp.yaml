@@ -20,7 +20,7 @@ spec:
         ports:
         - containerPort: 80
         volumeMounts:
-        - mountPath: "/etc/nginx/conf.d"
+        - mountPath: "/etc/nginx/nginx.conf"
           name: nginx
       volumes:
       - name: nginx
@@ -48,12 +48,15 @@ metadata:
   name: nginx
 data:
   default-conf: |
+events{}
+http {
     server {
         listen 80;
         location / {
                 proxy_pass http://service1:8001;
         }
-    } 
+    }
+}
 
 ---
 apiVersion: apps/v1
