@@ -42,6 +42,20 @@ spec:
   type: LoadBalancer
 
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx
+data:
+  default-conf: |
+    server {
+        listen 80;
+        location / {
+                proxy_pass http://service1:8001;
+        }
+    } 
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -87,7 +101,7 @@ spec:
   - protocol: TCP
     port: 8001
     targetPort: 8001
-  type: LoadBalancer
+  type: ClusterIP
 
 ---
 apiVersion: apps/v1
