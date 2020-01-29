@@ -1,1 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  labels: 
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: "/etc/nginx/conf.d"
+          name: nginx
+      volumes:
+      - name: nginx
+        configMap:   
+          name: nginx
+         
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+spec:
+  selector:
+    app: nginx
+  ports: 
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
 
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx
+data:
+  default-conf: |
+    server {
+        listen 80;
+        location / {
+                proxy_pass http://service1:8001;
+        }
+    }
